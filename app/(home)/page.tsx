@@ -4,6 +4,8 @@ import HeroSection from "@/components/home/hero-section";
 import TopArticles from "@/components/home/top-articles";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { Suspense } from "react";
+import { AllArticlesPageSkeleton } from "../articles/page";
 // import Navbar from "@/components/home/Navbar";
 
 const Home = () => {
@@ -18,7 +20,9 @@ const Home = () => {
                 <p>Discover our most popular and trending content</p>
               </div>
 
-            <TopArticles/>
+            <Suspense fallback={<AllArticlesPageSkeleton/>}>
+              <TopArticles/>
+            </Suspense>
             <div className="mt-12 text-center">
               <Link href={"/articles"}>
                 <Button
