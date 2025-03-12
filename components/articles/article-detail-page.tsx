@@ -39,8 +39,10 @@ const ArticleDetailPage: React.FC<ArticleDetailPageProps> = async ({ article }) 
     where: {articleId: article.id},
   })
 
-  const {userId} =  await auth();
-  const user = await prisma.user.findUnique({where:{clerkUserId:userId as string}});
+  const { userId } = await auth();
+  const user = userId
+    ? await prisma.user.findUnique({ where: { clerkUserId: userId } })
+    : null;
   const isLiked : boolean = likes.some((like)=> like.userId === user?.id);
 
   return (
@@ -55,7 +57,7 @@ const ArticleDetailPage: React.FC<ArticleDetailPageProps> = async ({ article }) 
             </div>
 
             <h1 className="text-4xl font-bold tracking-tight text-foreground mb-4">
-              How to Learn Web Development in 2025
+             {article.title}
             </h1>
 
             <div className="flex items-center gap-4 text-muted-foreground">
@@ -78,13 +80,15 @@ const ArticleDetailPage: React.FC<ArticleDetailPageProps> = async ({ article }) 
 
           {/* Article Action Button */}
 
-          <LikeButton 
-            articleId={article.id}
-            likes={likes}
-            isLiked={isLiked}
-          />
-          <CommentInput articleId={article.id}/>
-          <CommentList comments={comments}/>
+          <div className="mt-8">
+            {/* Show Like button only if user is logged in */}
+            {user ? <LikeButton articleId={article.id} isLiked={isLiked} likes={[]} /> : null}
+          </div>
+
+          <CommentList comments={comments} />
+
+          {/* Only show comment input if the user is logged in */}
+          {user && <CommentInput articleId={article.id} />}
         </article>
       </main>
     </div>
